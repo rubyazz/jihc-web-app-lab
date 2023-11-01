@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from diller.models import Car, Client
 from users.models import Employee
 from .permissions import IsManager, IsAccountant, IsAdmin
+from rest_framework.response import Response
 
 from .serializers import (
     CarListSerializer,
@@ -83,11 +84,13 @@ class ManagerCarViewSet(ModelViewSet):
 class AccountantViewSet(ModelViewSet):
     """Accountant CRUD api for sum of prices of sold cars"""
 
-    queryset = Car.objects.filter(isSold=True)
     serializer_class = CarListSerializer
     permission_classes = [IsAccountant]
 
-    def list(self, request, *args, **kwargs):
-        total_price = sum([car.price for car in self.queryset])
-        return JsonResponse({"total_price": total_price})
+    def get_queryset(self):
+        return Car.objects.filter(isSold=True)
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        total_price = sum([car.price for car in queryset])
+        return Response({"total_price": total_price})
