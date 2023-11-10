@@ -6,6 +6,11 @@ from diller.models import Car, Client
 from users.models import Employee
 from .permissions import IsManager, IsAccountant, IsAdmin
 from rest_framework.response import Response
+from rest_framework.decorators import action
+from djstripe.models import PaymentIntent
+from .serializers import TransactionSerializer
+from rest_framework import status
+import stripe
 
 from .serializers import (
     CarListSerializer,
@@ -26,7 +31,7 @@ class CarViewSet(ModelViewSet):
 
     queryset = Car.objects.all()
     serializer_class = CarListSerializer
-    permission_classes = [IsAuthenticated, IsAdmin]
+    # permission_classes = [IsAuthenticated, IsAdmin]
 
 
     def get_serializer_class(self):
@@ -34,7 +39,39 @@ class CarViewSet(ModelViewSet):
             return CarDetailsSerializer
         return super().get_serializer_class()
 
+    @action(detail=True, methods=['post'])
+    def sell_car(self, request, pk=None):
+        car = self.get_object()
 
+        if car.isSold:
+            return Response({"error": "Car already sold."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Assuming you have a Transaction model and serializer
+        transaction_serializer = TransactionSerializer(data={
+            'car': car.id,
+            'client': request.data.get('client_id'), 
+            'amount': car.price,
+        })
+
+        if transaction_serializer.is_valid():
+            stripe.api_key = "sk_test_51OAZxFHMsqh1ECvorSjAjXlgMGNrFR5PyeY5KcwN0jzEJgebyccS6P9ltViNnBPgqieG7KQoyx0XVJ7CGeSs62ZQ00eskokOoO"  # Replace with your actual secret key
+
+            payment_intent = stripe.PaymentIntent.create(
+                amount=int(car.price * 100),  
+                currency='usd',
+                payment_method_types=['card'],
+                payment_method="pm_card_visa",  
+                confirm=True,
+            )
+
+            car.isSold = True
+            car.save()
+
+            transaction_serializer.save()
+
+            return Response({"client_secret": payment_intent.client_secret})
+        else:
+            return Response({"error": transaction_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class EmployeeViewSet(ModelViewSet):
     """Employee CRUD api"""

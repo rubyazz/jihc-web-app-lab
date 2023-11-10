@@ -1,6 +1,6 @@
 # from api.users.serializers import UserSerializer
 from rest_framework import serializers
-from diller.models import Car, Client
+from diller.models import Car, Client, Transaction
 from users.models import Employee
 
 
@@ -75,3 +75,11 @@ class ClientDetailsSerializer(serializers.ModelSerializer):
         model = Client
         fields = ("__all__")
 
+
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = '__all__'
+        extra_kwargs = {
+            'client': {'required': True},
+        }

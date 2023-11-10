@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'rest_framework_simplejwt',
     'drf_yasg',
+    'djstripe',
 
 ]
 
@@ -204,3 +205,9 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+STRIPE_TEST_SECRET_KEY = "sk_test_51OAZxFHMsqh1ECvorSjAjXlgMGNrFR5PyeY5KcwN0jzEJgebyccS6P9ltViNnBPgqieG7KQoyx0XVJ7CGeSs62ZQ00eskokOoO"
+STRIPE_LIVE_MODE = False  # Change to True in production
+DJSTRIPE_WEBHOOK_SECRET = "whsec_xxx"  # Get it from the section in the Stripe dashboard where you added the webhook endpoint
+DJSTRIPE_USE_NATIVE_JSONFIELD = True  # We recommend setting to True for new installations
+DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
