@@ -81,3 +81,5 @@ class Transaction(models.Model):
 #   "isSold": false,
 #   "client_id": 1 
 # }
+
+# https://dashboard.stripe.com/login?redirect=%2Ftest%2Fpayments%2Fpi_3OGg9HHMsqh1ECvo1GTHWwdt
