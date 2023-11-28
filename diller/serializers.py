@@ -62,20 +62,6 @@ class EmployeeDetailsSerializer(serializers.ModelSerializer):
         )
 
 
-class ClientListSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Client
-        fields = ("__all__")
-
-
-class ClientDetailsSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Client
-        fields = ("__all__")
-
-
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
@@ -83,3 +69,36 @@ class TransactionSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'client': {'required': True},
         }
+
+
+class ClientListSerializer(serializers.ModelSerializer):
+
+    transaction = TransactionSerializer()
+
+    class Meta:
+        model = Client
+        fields = (
+            "firstName",
+            "lastName",
+            "gender",
+            "email",
+            "transaction",
+            )
+        extra_kwargs = {
+        "transaction" : {"required":"False"}
+        }
+
+
+class ClientDetailsSerializer(serializers.ModelSerializer):
+
+    transaction = TransactionSerializer()
+
+    class Meta:
+        model = Client
+        fields = (
+            "firstName",
+            "lastName",
+            "gender",
+            "email",
+            "transaction",
+            )

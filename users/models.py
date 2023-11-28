@@ -84,3 +84,12 @@ class Employee(AbstractBaseUser, PermissionsMixin):
 
     def has_module_perms(self, app_label):
         return self.is_staff
+
+
+# {
+#   "model": "Ferrari",
+#   "year": 2023,
+#   "price": 12000.0,
+#   "isSold": false,
+#   "client_id": 1 
+# }

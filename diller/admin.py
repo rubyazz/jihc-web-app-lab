@@ -2,9 +2,8 @@ from django.contrib import admin
 from .models import Car, Client, Transaction
 
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'car', 'client', 'amount', 'status')
+    list_display = ('id', 'car', 'client_user', 'amount', 'status')
     list_filter = ('status',)
-    search_fields = ('car__model', 'client__firstName', 'client__lastName')
 
 admin.site.register(Transaction, TransactionAdmin)
 
